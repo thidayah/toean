@@ -1,5 +1,8 @@
 <template>
-  <div class="flex justify-center items-center min-h-screen">
-    <div class=" text-5xl text-center text-blue-800 font-semibold">Welcome to Toean Apps</div>
-  </div>
+  <Toaster position="top-center" richColors />
+  <router-view />
 </template>
+
+<script setup>
+  import { Toaster } from "vue-sonner";
+</script>
