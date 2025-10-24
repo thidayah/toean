@@ -11,7 +11,7 @@
   "dependencies": {
     "@iconify/vue": "^5.0.0",
     "@tailwindcss/vite": "^4.1.15",
-    "lucide-vue-next": "^0.546.0",
+    "axios": "^1.12.2",
     "tailwindcss": "^4.1.15",
     "vue": "^3.5.22",
     "vue-router": "^4.6.3",
