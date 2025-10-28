@@ -1,4 +1,5 @@
 import axios from 'axios'
+import { clearAuth, getAuth } from "@/utils/auth"
 
 const api = axios.create({
   baseURL: import.meta.env.VITE_API_URL || 'https://api.example.com',
@@ -10,8 +11,13 @@ const api = axios.create({
 
 api.interceptors.request.use(
   (config) => {
-    const token = localStorage.getItem('token')
-    if (token) config.headers.Authorization = `Bearer ${token}`
+    const auth = getAuth()
+    if (auth) {
+      config.headers["Authorization"] = `Bearer ${auth?.accessToken}`;
+    }
+    if (!config.headers["Content-Type"]) {
+      config.headers["Content-Type"] = "application/json";
+    }
     return config
   },
   (error) => Promise.reject(error)
@@ -20,13 +26,24 @@ api.interceptors.request.use(
 api.interceptors.response.use(
   (response) => response,
   (error) => {
-    if (error.response?.status === 401) {
-      console.warn('Unauthorized, redirecting to login...')
-      // contoh: redirect atau hapus token
-      localStorage.removeItem('token')
-      window.location.href = '/'
+    const status = error.response?.status || 500;
+
+    if (status === 401) {
+      clearAuth()
+      setTimeout(() => {
+        window.location.href = '/'
+      }, 1500);
     }
-    return Promise.reject(error)
+
+    const err = {
+      status,
+      message:
+        error.response?.data?.message ||
+        error.message ||
+        "Something went wrong",
+      data: error.response?.data || null,
+    };
+    return Promise.reject(err);
   }
 )
 
