@@ -1,3 +1,7 @@
+<script setup>
+import { Header, Navbar } from ".";
+</script>
+
 <template>
   <Header />
   <div class="flex h-screen z-0">
@@ -8,8 +12,3 @@
     </main>
   </div>
 </template>
-
-<script setup>
-  import Header from "@/components/Header.vue";
-  import Navbar from '@/components/Navbar.vue'
-</script>
