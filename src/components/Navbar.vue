@@ -36,6 +36,14 @@ const menuData = ref([
     ],
   },
   {
+    title: 'Manage Banner',
+    icon: 'solar:gallery-wide-linear',
+    children: [
+      { title: 'Banner', path: '/banner/banner' },
+      { title: 'Walkthrough', path: '/banner/walkthrough' },
+    ],
+  },
+  {
     title: 'Manage Payment',
     icon: 'mdi:credit-card-outline',
     path: '/payment',
