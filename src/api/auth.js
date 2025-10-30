@@ -1,6 +1,5 @@
-// src/api/user.js
-import api from './axios'
+import { getData, postData } from './axios'
 
-export const login = (data) => api.post('/cms/v1/login', data)
-export const getProfile = () => api.get(`/cms/v1/profile/${id}`)
+export const apiLogin = (data) => postData('/cms/v1/login', data)
+export const apiGetProfile = (id) => getData(`/cms/v1/profile/${id}`)
 
