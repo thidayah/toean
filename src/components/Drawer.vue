@@ -1,15 +1,15 @@
 <script setup>
-import { ref, watchEffect } from 'vue'
-
-// Props dari parent
-const props = defineProps({
+defineProps({
+  title: {
+    type: String,
+    default: 'Drawer'
+  },
   modelValue: {
     type: Boolean,
     required: true,
   },
 })
 
-// Emit event ke parent (untuk 2-way binding)
 const emit = defineEmits(['update:modelValue'])
 
 const closeDrawer = () => emit('update:modelValue', false)
@@ -33,9 +33,9 @@ const closeDrawer = () => emit('update:modelValue', false)
     >
       <!-- Header -->
       <div class="flex items-center justify-between p-4 px-6 border-b border-[#e7e8e7]">
-        <slot name="header">
-          <h2 class="text-lg font-semibold text-gray-800">Drawer</h2>
-        </slot>
+        <!-- <slot name="header"> -->
+          <h2 class="text-lg font-semibold text-gray-800">{{ title }}</h2>
+        <!-- </slot> -->
         <button
           @click="closeDrawer"
           class="p-2 text-gray-600 hover:text-gray-800 cursor-pointer"
