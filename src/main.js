@@ -4,6 +4,7 @@ import App from './App.vue'
 import router from './router'
 import { Toaster } from 'vue-sonner'
 import 'vue-sonner/style.css'
+import '@vuepic/vue-datepicker/dist/main.css'
 
 // createApp(App).mount('#app')
 const app = createApp(App)
