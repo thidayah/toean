@@ -1,8 +1,10 @@
 <script setup>
-import { reactive, ref } from 'vue'
+import { onMounted, reactive, ref } from 'vue'
 import { toast } from 'vue-sonner'
-import { Lock, LockOpen } from 'lucide-vue-next'
 import { useRouter } from "vue-router"
+import { Icon } from "@iconify/vue"
+import { apiLogin } from "@/api/auth"
+import { clearRemembered, getAuth, getRemembered, setAuth, setRemembered } from "@/utils/auth"
 
 const form = reactive({
   email: '',
@@ -15,6 +17,14 @@ const router = useRouter()
 const showPassword = ref(false)
 const togglePassword = () => (showPassword.value = !showPassword.value)
 
+onMounted(() => {
+  const remembered = getRemembered()
+  if (remembered) {
+    form.email = remembered.email
+    form.password = remembered.password
+    form.remember = true
+  }
+})
 
 const validateForm = () => {
   if (!form.email.trim()) {
@@ -36,11 +46,21 @@ const validateForm = () => {
   return true
 }
 
-const onSubmit = () => {
+const onSubmit = async () => {
   if (!validateForm()) return
-  toast.success('Login successful!')
-  router.push('/dashboard')
-  console.log('Form Data:', form)
+  try {
+    const { data, message } = await apiLogin(form)
+    setAuth(data)
+    if (form.remember) {
+      setRemembered(form)
+    } else {
+      clearRemembered()
+    }
+    toast.success(message || 'Login successful!')
+    router.push('/dashboard')
+  } catch (error) {
+    toast.error(error?.message || 'Login failed')
+  }
 }
 </script>
 
@@ -56,60 +76,43 @@ const onSubmit = () => {
           Make your app management easy and fun.
         </p>
 
-        <form @submit.prevent="onSubmit" class="space-y-5 text-left">
+        <!-- <form @submit.prevent="onSubmit" class="space-y-5 text-left"> -->
+        <div class="space-y-5 text-left">
           <!-- Email -->
           <div>
             <label class="block text-sm font-medium text-gray-700 mb-1">Email</label>
-            <input
-              v-model="form.email"
-              type="email"
-              placeholder="Email"
-              class="w-full px-4 py-2 rounded-lg border border-gray-300 focus:ring-2 focus:ring-blue-500 focus:outline-none placeholder:text-gray-300"
-            />
+            <input v-model="form.email" type="email" placeholder="Email"
+              class="w-full px-4 py-2 rounded-lg border border-gray-300 focus:ring-1 focus:ring-blue-500 focus:outline-none placeholder:text-gray-300" />
           </div>
 
           <!-- Password -->
           <div>
             <label class="block text-sm font-medium text-gray-700 mb-1">Password</label>
             <div class="relative">
-              <input
-                :type="showPassword ? 'text' : 'password'"
-                v-model="form.password"
-                placeholder="Password"
-                class="w-full px-4 py-2 rounded-lg border border-gray-300 focus:ring-2 focus:ring-blue-500 focus:outline-none pr-10 placeholder:text-gray-300"
-              />
-              <button
-                type="button"
-                @click="togglePassword"
-                class="absolute inset-y-0 right-0 flex items-center pr-3 cursor-pointer"
-              >
-                <component
-                  :is="showPassword ? LockOpen : Lock"
-                  class="text-gray-600 size-5"
-                />
+              <input :type="showPassword ? 'text' : 'password'" v-model="form.password" placeholder="Password"
+                autocomplete="false"
+                class="w-full px-4 py-2 rounded-lg border border-gray-300 focus:ring-1 focus:ring-blue-500 focus:outline-none pr-10 placeholder:text-gray-300" />
+              <button type="button" @click="togglePassword"
+                class="absolute inset-y-0 right-0 flex items-center pr-3 cursor-pointer">
+                <Icon :icon="showPassword ? 'mdi:lock-open-outline' : 'mdi:lock-outline'"
+                  class="text-gray-600 size-5" />
               </button>
             </div>
           </div>
 
           <!-- Remember -->
           <div class="flex items-center">
-            <input
-              id="remember"
-              type="checkbox"
-              v-model="form.remember"
-              class="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
-            />
+            <input id="remember" type="checkbox" v-model="form.remember"
+              class="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded" />
             <label for="remember" class="ml-2 text-sm text-gray-700">Remember me</label>
           </div>
 
           <!-- Button -->
-          <button
-            type="submit"
-            class="w-full bg-blue-900 text-white py-2 rounded-lg hover:bg-blue-800 transition font-medium "
-          >
+          <button @click="onSubmit"
+            class="w-full bg-primary text-white py-2 rounded-lg hover:bg-primary/75 transition font-medium cursor-pointer">
             Login
           </button>
-        </form>
+        </div>
       </div>
     </div>
 
@@ -119,4 +122,3 @@ const onSubmit = () => {
     </footer>
   </div>
 </template>
-
