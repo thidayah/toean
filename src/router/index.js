@@ -9,6 +9,9 @@ import UserList from '@/views/user/UserList.vue'
 import Customer from "@/views/Customer.vue"
 import Banner from "@/views/banner/Banner.vue"
 import Walkthrough from "@/views/banner/Walkthrough.vue"
+import AboutUs from "@/views/settings/AboutUs.vue"
+import TermsConditions from "@/views/settings/TermsConditions.vue"
+import PrivacyPolicy from "@/views/settings/PrivacyPolicy.vue"
 
 const routes = [
   {
@@ -49,6 +52,16 @@ const routes = [
     children: [
       { path: '/banner/banner', name: 'Banner', component: Banner, meta: { title: 'Banner | Toean' } },
       { path: '/banner/walkthrough', name: 'Walkthrough', component: Walkthrough, meta: { title: 'Walkthrough | Toean' } },
+    ]
+  },
+  {
+    path: '/settings',
+    component: Layout,
+    meta: { requiresAuth: true },
+    children: [
+      { path: '/settings/about-us', name: 'AboutUs', component: AboutUs, meta: { title: 'About Us | Toean' } },
+      { path: '/settings/terms-conditions', name: 'TermsConditions', component: TermsConditions, meta: { title: 'Terms and Conditions | Toean' } },
+      { path: '/settings/privacy-policy', name: 'PrivacyPolicy', component: PrivacyPolicy, meta: { title: 'Privacy Policy | Toean' } },
     ]
   },
 ]
