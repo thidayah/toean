@@ -52,8 +52,9 @@ const menuData = ref([
     title: 'Settings',
     icon: 'mdi:cog-outline',
     children: [
-      { title: 'General', path: '/setting/general' },
-      { title: 'Security', path: '/setting/security' },
+      { title: 'About Us', path: '/settings/about-us' },
+      { title: 'Terms and Conditions', path: '/settings/terms-conditions' },
+      { title: 'Privacy Policy', path: '/settings/privacy-policy' },
     ],
   },
 ])
