@@ -12,6 +12,7 @@ import Walkthrough from "@/views/banner/Walkthrough.vue"
 import AboutUs from "@/views/settings/AboutUs.vue"
 import TermsConditions from "@/views/settings/TermsConditions.vue"
 import PrivacyPolicy from "@/views/settings/PrivacyPolicy.vue"
+import NotFound from "@/views/NotFound.vue"
 
 const routes = [
   {
@@ -64,6 +65,13 @@ const routes = [
       { path: '/settings/privacy-policy', name: 'PrivacyPolicy', component: PrivacyPolicy, meta: { title: 'Privacy Policy | Toean' } },
     ]
   },
+  { 
+    path: '/:pathMatch(.*)*', 
+    name: 'NotFound', 
+    component: NotFound,
+    meta: { title: 'Not Found | Toean', requiresAuth: false },
+  }
+
 ]
 
 const router = createRouter({
