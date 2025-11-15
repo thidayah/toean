@@ -35,3 +35,26 @@ export const walkthroughHeaders = [
   { label: 'Type', key: 'type' },
   { label: 'Actions', key: 'actions' },
 ]
+
+export const aboutHeaders = [
+  { label: 'Title', key: 'title' },
+  { label: 'Description', key: 'description' },
+  { label: 'Type', key: 'type' },
+  { label: 'Actions', key: 'actions' },
+]
+
+export const termsHeaders = [
+  { label: 'Title', key: 'title' },
+  { label: 'Description', key: 'description' },
+  { label: 'Sequence', key: 'sequence' },
+  { label: 'Type', key: 'type' },
+  { label: 'Actions', key: 'actions' },
+]
+
+export const privacyHeaders = [
+  { label: 'Title', key: 'title' },
+  { label: 'Description', key: 'description' },
+  { label: 'Sequence', key: 'sequence' },
+  { label: 'Type', key: 'type' },
+  { label: 'Actions', key: 'actions' },
+]
