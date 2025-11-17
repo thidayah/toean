@@ -13,7 +13,7 @@ api.interceptors.request.use(
   (config) => {
     const auth = getAuth()
     if (auth) {
-      config.headers["Authorization"] = `Bearer ${auth?.accessToken}`;
+      config.headers["Authorization"] = `Bearer ${auth?.token}`;
     }
     if (!config.headers["Content-Type"]) {
       config.headers["Content-Type"] = "application/json";
