@@ -1,6 +1,6 @@
 <script setup>
-import { onMounted, ref, reactive } from 'vue'
-import { Icon } from '@iconify/vue'
+import { onMounted, ref } from 'vue'
+// import { Icon } from '@iconify/vue'
 import { BaseTable, Drawer, BaseInput, BaseSelect, BaseTextarea, BaseButton, BaseTitle, BaseAction } from '@/components'
 import { userListHeaders } from "@/utils/columns"
 import { apiDelUser, apiGetUsers, apiPostUser, apiPutUser } from "@/api/users"
@@ -22,7 +22,7 @@ const userForm = ref({
   fullName: '',
   email: '',
   password: '',
-  userRoleId: null,
+  roleId: null,
   // position: '',
   // role: '',
   // phone: '',
@@ -35,13 +35,14 @@ const togglePassword = () => (isShowPassword.value = !isShowPassword.value)
 
 const fetchUsers = async (params) => {
   try {
-    const { data, meta } = await apiGetUsers(params)
-    users.value = data.map(r => ({ ...r, role: r.role?.RoleName }))
+    const { data: { items, pagination } } = await apiGetUsers(params)
+    // users.value = items.map(r => ({ ...r, role: r.role?.RoleName }))
+    users.value = items.map(r => ({ ...r, role: r.roleId }))
     pages.value = {
-      current: meta.current_page,
-      per: meta.per_page,
-      last: meta.last_page,
-      total: meta.total
+      current: pagination.page,
+      per: pagination.limit,
+      last: pagination.totalPage,
+      total: pagination.total
     }
   } catch (error) {
     toast.error(error?.message || 'Failed to load users')
@@ -52,17 +53,17 @@ const fetchUsers = async (params) => {
 
 const fetchRoles = async (params) => {
   try {
-    const { data } = await apiGetRoles(params)
-    roles.value = data.map(r => ({ ...r, value: r.roleId, label: r.RoleName }))
+    const { data: { items } } = await apiGetRoles(params)
+    roles.value = items.map(r => ({ ...r, value: r.id, label: r.name }))
   } catch (error) {
     toast.error(error?.message || 'Failed to load roles')
   }
 }
 
-const postUser = async () => {
+const postUser = async () => {  
   isAction.value = true
   try {
-    const { message } = await apiPostUser({ ...userForm.value, userRoleId: parseInt(userForm.value.userRoleId) })
+    const { message } = await apiPostUser({ ...userForm.value, roleId: parseInt(userForm.value.roleId) })
     toast.success(message || 'User added successfully!')
     handleRefersh()
   } catch (error) {
@@ -75,7 +76,7 @@ const postUser = async () => {
 const putUser = async () => {
   isAction.value = true
   try {
-    const { message } = await apiPutUser(userForm.value.id, { ...userForm.value, userRoleId: parseInt(userForm.value.userRoleId) })
+    const { message } = await apiPutUser(userForm.value.id, { ...userForm.value, roleId: parseInt(userForm.value.roleId) })
     toast.success(message || 'User updated successfully!')
     handleRefersh()
   } catch (error) {
@@ -115,14 +116,14 @@ const handlePageChange = async (page) => {
   fetchUsers({ page: page, limit: pages.value.per })
 }
 
-const handleSave = () => !isEdit ? postUser() : putUser()
+const handleSave = ()  => !isEdit.value ? postUser() : putUser()
 
 const handleEdit = (item) => {
   userForm.value = {
     id: item.id,
     fullName: item.fullName,
     email: item.email,
-    userRoleId: item.userRoleId,
+    roleId: item.roleId,
   }
   isEdit.value = true
   isDrawerOpen.value = true
@@ -147,7 +148,7 @@ const handleCancel = () => {
     fullName: '',
     email: '',
     password: '',
-    userRoleId: '',
+    roleId: '',
     // position: '',
     // role: '',
     // phone: '',
@@ -224,7 +225,7 @@ const handleCancel = () => {
             <BaseInput v-model="userForm.email" type="email" placeholder="Email" />
             <BaseInput v-model="userForm.password" type="password" placeholder="Password" :show="isShowPassword"
               @onShow="togglePassword" />
-            <BaseSelect v-model="userForm.userRoleId" :options="roles" placeholder="Role" />
+            <BaseSelect v-model="userForm.roleId" :options="roles" placeholder="Role" />
           </div>
         </div>
 
