@@ -8,7 +8,8 @@ export const userListHeaders = [
 ]
 
 export const rolesHeaders = [
-  { label: 'Role Name', key: 'RoleName' },
+  { label: 'Role Name', key: 'name' },
+  { label: 'Description', key: 'description' },
   { label: 'Actions', key: 'actions' },
 ]
 

@@ -1,20 +1,22 @@
 <script setup>
-import { ref, onMounted, reactive } from 'vue'
-import { BaseButton, BaseTable, BaseInput, Drawer, PermissionGroup, BaseTitle, BaseAction } from '@/components'
+import { ref, onMounted } from 'vue'
+import { BaseButton, BaseTable, BaseInput, Drawer, PermissionGroup, BaseTitle, BaseAction, BaseTextarea } from '@/components'
 import { rolesHeaders } from "@/utils/columns"
-import { apiGetRoles } from "@/api/roles"
+import { apiDelRole, apiGetRoles, apiPostRole, apiPutRole } from "@/api/roles"
+import { toast } from "vue-sonner"
+import { handleError } from "@/utils"
 
 const isLoading = ref(false)
 const isProcess = ref(false)
 const isAction = ref(false)
 const isEdit = ref(false)
 const isDrawerOpen = ref(false)
-const isShowPassword = ref(false)
 const roles = ref([])
 const pages = ref({ current: 1, per: 10, last: 0, total: 0 })
 const form = ref({
   id: null,
   name: '',
+  description: '',
 })
 
 const rolePermissions = ref([
@@ -38,18 +40,57 @@ const rolePermissions = ref([
 
 const fetchRoles = async (params) => {
   try {
-    const { data, meta } = await apiGetRoles(params)
-    roles.value = data
+    const { data: { items, pagination } } = await apiGetRoles(params)
+    roles.value = items
     pages.value = {
-      current: meta.current_page,
-      per: meta.per_page,
-      last: meta.last_page,
-      total: meta.total
+      current: pagination.page,
+      per: pagination.limit,
+      last: pagination.totalPage,
+      total: pagination.total
     }
   } catch (error) {
     toast.error(error?.message || 'Failed to load roles')
   } finally {
     isProcess.value = false
+  }
+}
+
+const postRole = async () => {
+  isAction.value = true
+  try {
+    const { message } = await apiPostRole(form.value)
+    toast.success(message || 'Role added successfully!')
+    handleRefersh()
+  } catch (error) {
+    handleError(error)    
+  } finally {
+    isAction.value = false
+  }
+}
+
+const putRole = async () => {
+  isAction.value = true
+  try {
+    const { message } = await apiPutRole(form.value.id, form.value)
+    toast.success(message || 'Role updated successfully!')
+    handleRefersh()
+  } catch (error) {
+    handleError(error)
+  } finally {
+    isAction.value = false
+  }
+}
+
+const delRole = async (id) => {
+  isAction.value = true
+  try {
+    const { message } = await apiDelRole(id)
+    toast.success(message || 'Role deleted successfully!')
+    handleRefersh()
+  } catch (error) {
+    handleError(error)
+  } finally {
+    isAction.value = false
   }
 }
 
@@ -64,26 +105,43 @@ onMounted(async () => {
   }
 })
 
-// Event handlers
-const handleEdit = (item) => console.log('Edit action:', item)
-const handleDelete = (item) => console.log('Delete action:', item)
-const handlePageChange = (page) => {
-
+const handlePageChange = async (page) => {
+  isProcess.value = true
+  fetchRoles({ page: page, limit: pages.value.per })
 }
 
-const handleSave = () => {
-  console.log('User added:', form.value)
-  console.log('Permissions:', rolePermissions.value)
-  isDrawerOpen.value = false
-}
+const handleSave = () => !isEdit.value ? postRole() : putRole()
 
-const cancelForm = () => {
-  isDrawerOpen.value = false
+const handleEdit = (item) => {
   form.value = {
-    name: '',
+    id: item.id,
+    name: item.name,
+    description: item.description,
+  }
+  isEdit.value = true
+  isDrawerOpen.value = true
+}
+
+const handleDelete = (item) => {
+  if (confirm('Are you sure to delete this item?')) {
+    delRole(item.id)
   }
 }
 
+const handleRefersh = () => {
+  fetchRoles({ page: pages.value.current, limit: pages.value.per })
+  setTimeout(() => {
+    isDrawerOpen.value = false
+  }, 100);
+}
+
+const handleCancel = () => {
+  isDrawerOpen.value = false
+  form.value = {
+    name: '',
+    description: '',
+  }
+}
 </script>
 
 <template>
@@ -97,7 +155,8 @@ const cancelForm = () => {
       </BaseButton>
     </div>
 
-    <BaseTable :loading="isLoading" :process="isProcess" :headers="rolesHeaders" :items="roles" :pagination="pages" @pageChange="handlePageChange">
+    <BaseTable :loading="isLoading" :process="isProcess" :headers="rolesHeaders" :items="roles" :pagination="pages"
+      @pageChange="handlePageChange">
       <!-- actions -->
       <template #actions="{ row, index }">
         <div :key="index" class="py-1 space-x-2 items-center flex justify-end">
@@ -115,7 +174,8 @@ const cancelForm = () => {
           <!-- Input Fields -->
           <div class="space-y-3">
             <BaseInput v-model="form.name" placeholder="Name" />
-            <PermissionGroup v-for="role in rolePermissions" v-model="role.permissions" :title="role.title" />
+            <BaseTextarea v-model="form.description" placeholder="Description" />
+            <!-- <PermissionGroup v-for="role in rolePermissions" v-model="role.permissions" :title="role.title" /> -->
           </div>
 
         </div>
@@ -125,7 +185,7 @@ const cancelForm = () => {
           <BaseButton type="submit" variant="filled">
             Save
           </BaseButton>
-          <BaseButton @click="cancelForm" variant="outline">
+          <BaseButton @click="handleCancel" variant="outline">
             Cancel
           </BaseButton>
         </div>
