@@ -174,7 +174,7 @@ export const dataWalkthrough = {
   }
 }
 
-export const dataAbout = {
+export const dataAbout1 = {
   "status": true,
   "data": [
     {
@@ -200,55 +200,88 @@ export const dataAbout = {
   }
 }
 
+export const dataAbout = {
+  "data": {
+    "items": [
+      {
+        "id": 1,
+        "title": "About Toean",
+        "description": "Visi Kami: Menghubungkan Kebutuhan, Menggerakkan Komunitas Kami adalah TOEAN, aplikasi layanan antar lokal yang didirikan dengan satu tujuan sederhana: merevolusi cara barang bergerak di dalam kota Anda. Kami percaya bahwa pengiriman barang dan pemenuhan kebutuhan harian tidak seharusnya menjadi hambatan, melainkan bagian dari solusi yang mulus, cepat, dan terpercaya.",
+        "type": "Customer",
+        "sequence": "2025-06-21",
+      },
+      {
+        "id": 2,
+        "title": "About Tukang Antar",
+        "description": "Nama TOEAN mencerminkan komitmen kami untuk menjadi tuan rumah yang baik bagi kebutuhan pengiriman Anda—layak, dapat diandalkan, dan siap melayani dengan sepenuh hati.",
+        "type": "Customer",
+        "sequence": "2025-06-21",
+      },
+    ],
+    "pagination": {
+      "limit": 10,
+      "page": 1,
+      "totalPage": 1,
+      "total": 5
+    },
+    "message": "Data fetched successfully"
+  }
+}
+
+
 export const dataTerms = {
-  "status": true,
-  "data": [
-    {
-      "id": 1,
-      "title": "Ketentuan Umum",
-      "description": "Penyedia Layanan: Aplikasi Toean dioperasikan oleh [Nama Perusahaan Anda, cth: PT Digital Toean Jaya] (selanjutnya disebut..",
-      "type": "Customer",
-      "sequence": "1",
+  "data": {
+    "items": [
+      {
+        "id": 1,
+        "title": "Ketentuan Umum",
+        "description": "Penyedia Layanan: Aplikasi Toean dioperasikan oleh [Nama Perusahaan Anda, cth: PT Digital Toean Jaya] (selanjutnya disebut..",
+        "type": "Customer",
+        "sequence": "1",
+      },
+      {
+        "id": 2,
+        "title": "Akun dan Registrasi",
+        "description": "Untuk menggunakan fitur tertentu dari Aplikasi, Anda mungkin perlu membuat akun dan memberikan informasi yang akurat dan lengkap.",
+        "type": "Customer",
+        "sequence": "2",
+      },
+    ],
+    "pagination": {
+      "limit": 10,
+      "page": 1,
+      "totalPage": 1,
+      "total": 5
     },
-    {
-      "id": 2,
-      "title": "Akun dan Registrasi",
-      "description": "Untuk menggunakan fitur tertentu dari Aplikasi, Anda mungkin perlu membuat akun dan memberikan informasi yang akurat dan lengkap.",
-      "type": "Customer",
-      "sequence": "2",
-    },
-  ],
-  "meta": {
-    "current_page": 1,
-    "per_page": 10,
-    "last_page": 1,
-    "total": 5
+    "message": "Data fetched successfully"
   }
 }
 
 export const dataPrivacy = {
-  "status": true,
-  "data": [
-    {
-      "id": 1,
-      "title": "Informasi yang Kami Kumpulkan",
-      "description": "Data Identitas dan Kontak: Nama lengkap, alamat email, nomor telepon, tanggal lahir, dan informasi profil lainnya saat Anda mendaft..",
-      "type": "Driver",
-      "sequence": "1",
+  "data": {
+    "items": [
+      {
+        "id": 1,
+        "title": "Informasi yang Kami Kumpulkan",
+        "description": "Data Identitas dan Kontak: Nama lengkap, alamat email, nomor telepon, tanggal lahir, dan informasi profil lainnya saat Anda mendaft..",
+        "type": "Driver",
+        "sequence": "1",
+      },
+      {
+        "id": 2,
+        "title": "Tujuan Penggunaan Informasi",
+        "description": "Kami menggunakan Data Pribadi yang Kami kumpulkan untuk tujuan-tujuan berikut:",
+        "type": "Driver",
+        "sequence": "2",
+      },
+    ],
+    "pagination": {
+      "limit": 10,
+      "page": 1,
+      "totalPage": 1,
+      "total": 5
     },
-    {
-      "id": 2,
-      "title": "Tujuan Penggunaan Informasi",
-      "description": "Kami menggunakan Data Pribadi yang Kami kumpulkan untuk tujuan-tujuan berikut:",
-      "type": "Driver",
-      "sequence": "2",
-    },
-  ],
-  "meta": {
-    "current_page": 1,
-    "per_page": 10,
-    "last_page": 1,
-    "total": 5
+    "message": "Data fetched successfully"
   }
 }
 

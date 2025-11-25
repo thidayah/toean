@@ -34,13 +34,13 @@ const sequenceOptions = [
 const fetchPrivacy = async (params) => {
   try {
     // const { data, meta } = await apiGetPrivacy(params)
-    const { data, meta } = dataPrivacy
-    privacy.value = data
-    pages.value = {
-      current: meta.current_page,
-      per: meta.per_page,
-      last: meta.last_page,
-      total: meta.total
+    const { data: { items, pagination } } = dataPrivacy
+    privacy.value = items
+     pages.value = {
+      current: pagination.page,
+      per: pagination.limit,
+      last: pagination.totalPage,
+      total: pagination.total
     }
   } catch (error) {
     toast.error(error?.message || 'Failed to load data')
@@ -87,7 +87,7 @@ const cancelForm = () => {
 
 <template>
   <div>
-    <BaseTitle :title="title" />
+    <BaseTitle title="Settings" />
 
     <div class="flex items-center justify-between px-5 py-6 bg-white rounded-t-lg">
       <h2 class="font-medium text-lg text-gray-800">{{ title }}</h2>
