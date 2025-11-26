@@ -74,6 +74,18 @@ export const putData = async (url, body = {}) => {
   return response.data
 }
 
+export const putFormData = async (url, formObj = {}) => {
+  const formData = new FormData()
+  Object.keys(formObj).forEach((key) => {
+    formData.append(key, formObj[key])
+  })
+
+  const response = await api.put(url, formData, {
+    headers: { 'Content-Type': 'multipart/form-data' },
+  })
+  return response.data
+}
+
 export const patchData = async (url, body = {}) => {
   const response = await api.patch(url, body)
   return response.data
