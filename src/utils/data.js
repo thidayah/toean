@@ -1,3 +1,8 @@
+export const dataTypeOptions = [
+  { label: 'Customer', value: 1 },
+  { label: 'Driver', value: 2 },
+]
+
 export const dataCustomer = {
   "status": true,
   "data": [

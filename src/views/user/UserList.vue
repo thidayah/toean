@@ -65,7 +65,7 @@ const postUser = async () => {
   try {
     const { message } = await apiPostUser({ ...userForm.value, roleId: parseInt(userForm.value.roleId) })
     toast.success(message || 'User added successfully!')
-    handleRefersh()
+    handleRefresh()
   } catch (error) {
     handleError(error)
   } finally {
@@ -78,7 +78,7 @@ const putUser = async () => {
   try {
     const { message } = await apiPutUser(userForm.value.id, { ...userForm.value, roleId: parseInt(userForm.value.roleId) })
     toast.success(message || 'User updated successfully!')
-    handleRefersh()
+    handleRefresh()
   } catch (error) {
     handleError(error)
   } finally {
@@ -91,7 +91,7 @@ const delUser = async (id) => {
   try {
     const { message } = await apiDelUser(id)
     toast.success(message || 'User deleted successfully!')
-    handleRefersh()
+    handleRefresh()
   } catch (error) {
     handleError(error)
   } finally {
@@ -135,7 +135,7 @@ const handleDelete = (item) => {
   }
 }
 
-const handleRefersh = () => {
+const handleRefresh = () => {
   fetchUsers({ page: pages.value.current, limit: pages.value.per })
   setTimeout(() => {
     isDrawerOpen.value = false
