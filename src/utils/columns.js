@@ -24,7 +24,7 @@ export const customerHeaders = [
 
 export const bannerHeaders = [
   { label: 'Image', key: 'image' },
-  { label: 'Name', key: 'name' },
+  { label: 'Title', key: 'title' },
   { label: 'Type', key: 'type' },
   { label: 'Periode', key: 'periode' },
   { label: 'Actions', key: 'actions' },
@@ -32,7 +32,7 @@ export const bannerHeaders = [
 
 export const walkthroughHeaders = [
   { label: 'Image', key: 'image' },
-  { label: 'Name', key: 'name' },
+  { label: 'Title', key: 'title' },
   { label: 'Type', key: 'type' },
   { label: 'Actions', key: 'actions' },
 ]
