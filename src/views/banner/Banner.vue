@@ -1,10 +1,12 @@
 <script setup>
-import { ref, onMounted } from 'vue'
-import { BaseButton, BaseTable, BaseInput, Drawer, PermissionGroup, BaseTitle, BaseAction, BaseSelect, BaseUpload, DateRangePicker } from '@/components'
+import { ref, onMounted, watchEffect } from 'vue'
+import { BaseButton, BaseTable, BaseInput, Drawer, BaseTitle, BaseAction, BaseSelect, BaseUpload, DateRangePicker, BaseToggle } from '@/components'
 import { bannerHeaders } from "@/utils/columns"
-import { dataBanner } from "@/utils/data"
+import { dataBanner, dataTypeOptions } from "@/utils/data"
 import moment from "moment"
 import { toast } from "vue-sonner"
+import { apiDelBanner, apiGetBanners, apiPostBanner, apiPutBanner } from "@/api/banners"
+import { handleError } from "@/utils"
 
 const isLoading = ref(false)
 const isProcess = ref(false)
@@ -15,34 +17,69 @@ const banners = ref([])
 const pages = ref({ current: 1, per: 10, last: 0, total: 0 })
 const form = ref({
   id: null,
-  name: '',
+  title: '',
+  link: '',
   image: '',
   type: '',
   startDate: '',
   endDate: '',
+  active: false,
   dateRange: '',
 })
 
-const typeOptions = [
-  { label: 'Developer', value: 'developer' },
-  { label: 'Customer', value: 'customer' },
-]
-
-const fetchBanners = async (params) => {
+const fetchData = async (params) => {
   try {
-    // const { data, meta } = await apiGetBanners(params)
-    const { data, meta } = dataBanner
-    banners.value = data
+    const { data: { items, pagination } } = await apiGetBanners(params)
+    banners.value = items
     pages.value = {
-      current: meta.current_page,
-      per: meta.per_page,
-      last: meta.last_page,
-      total: meta.total
+      current: pagination.page,
+      per: pagination.limit,
+      last: pagination.totalPage,
+      total: pagination.total
     }
   } catch (error) {
-    toast.error(error?.message || 'Failed to load banners')
+    toast.error(error?.message || 'Failed to load data')
   } finally {
     isProcess.value = false
+  }
+}
+
+const postData = async () => {
+  isAction.value = true
+  try {
+    const { message } = await apiPostBanner(form.value)
+    toast.success(message || 'Added successfully!')
+    handleRefresh()
+  } catch (error) {
+    handleError(error)
+  } finally {
+    isAction.value = false
+  }
+}
+
+const putData = async () => {
+  isAction.value = true
+  try {
+    const { message } = await apiPutBanner(form.value.id, form.value)
+    toast.success(message || 'Updated successfully!')
+    handleRefresh()
+  } catch (error) {
+    handleError(error)
+  } finally {
+    isAction.value = false
+  }
+}
+
+const delData = async (id) => {
+  isAction.value = true
+  try {
+    const { message } = await apiDelBanner(id)
+    toast.success(message || 'Deleted successfully!')
+    handleRefresh()
+  } catch (error) {
+    handleError(error)
+  } finally {
+    isAction.value = false
   }
 }
 
@@ -50,29 +87,74 @@ onMounted(async () => {
   isLoading.value = true
   try {
     await Promise.all([
-      fetchBanners({ page: pages.value.current, limit: pages.value.per })
+      fetchData({ page: pages.value.current, limit: pages.value.per })
     ])
   } finally {
     isLoading.value = false
   }
 })
 
-// Event handlers
-const handleEdit = (item) => console.log('Edit action:', item)
-const handleDelete = (item) => console.log('Delete action:', item)
-const handlePageChange = (page) => {
+watchEffect(() => {
+  if (form.value.dateRange && form.value.dateRange.length === 2) {
+    form.value.startDate = moment(form.value.dateRange[0]).format('YYYY-MM-DD')
+    form.value.endDate = moment(form.value.dateRange[1]).format('YYYY-MM-DD')
+  } else {
+    form.value.startDate = ''
+    form.value.endDate = ''
+  }
+})
 
+const handlePageChange = async (page) => {
+  isProcess.value = true
+  fetchData({ page: page, limit: pages.value.per })
 }
 
-const handleSave = () => {
-  console.log('added:', form.value)
-  isDrawerOpen.value = false
+const handleSave = () => !isEdit.value ? postData() : putData()
+
+const handleEdit = (item) => {
+  let sDate = moment(item.startDate).format('YYYY-MM-DD')
+  let eDate = moment(item.endDate).format('YYYY-MM-DD')
+  form.value = {
+    id: item.id,
+    title: item.title,
+    link: item.link,
+    image: item.image,
+    type: item.type,
+    active: item.active,
+    sequence: item.sequence,
+    startDate: sDate,
+    endDate: eDate,
+    dateRange: [sDate, eDate],
+  }
+  isEdit.value = true
+  isDrawerOpen.value = true
+}
+
+const handleDelete = (item) => {
+  if (confirm('Are you sure to delete this item?')) {
+    delData(item.id)
+  }
+}
+
+const handleRefresh = () => {
+  fetchData({ page: pages.value.current, limit: pages.value.per })
+  setTimeout(() => {
+    isDrawerOpen.value = false
+  }, 100);
 }
 
 const cancelForm = () => {
   isDrawerOpen.value = false
   form.value = {
-    name: '',
+    id: null,
+    title: '',
+    link: '',
+    image: '',
+    type: '',
+    startDate: '',
+    endDate: '',
+    active: false,
+    dateRange: '',
   }
 }
 
@@ -94,6 +176,11 @@ const cancelForm = () => {
       <!-- images -->
       <template #image="{ row }">
         <img :src="row.image" :alt="row.name" class="w-40 h-20 rounded object-cover">
+      </template>
+
+      <!-- type -->
+      <template #type="{ row }">
+        <p>{{ row.type === 1 ? 'Customer' : 'Driver' }}</p>
       </template>
 
       <!-- periode -->
@@ -120,9 +207,11 @@ const cancelForm = () => {
 
           <!-- Input Fields -->
           <div class="space-y-3">
-            <BaseInput v-model="form.name" placeholder="Name" />
-            <BaseSelect v-mode="form.type" :options="typeOptions" placeholder="Type" />
+            <BaseInput v-model="form.title" placeholder="Title" />
+            <BaseInput v-model="form.link" placeholder="Link" />
+            <BaseSelect v-model="form.type" :options="dataTypeOptions" placeholder="Type" />
             <DateRangePicker v-model="form.dateRange" />
+            <BaseToggle v-model="form.active" active-label="Active" inactive-label="Inactive" />
           </div>
         </div>
 
