@@ -1,6 +1,6 @@
 <script setup>
 import { ref, onMounted } from 'vue'
-import { BaseButton, BaseTable, BaseInput, Drawer, BaseTitle, BaseAction, BaseSelect, BaseTextarea } from '@/components'
+import { BaseButton, BaseTable, BaseInput, Drawer, BaseTitle, BaseAction, BaseSelect, BaseTextarea, BaseEditor } from '@/components'
 import { aboutHeaders } from "@/utils/columns"
 import { dataAbout } from "@/utils/data"
 import { toast } from "vue-sonner"
@@ -109,8 +109,9 @@ const cancelForm = () => {
           <!-- Input Fields -->
           <div class="space-y-3">
             <BaseInput v-model="form.title" placeholder="Name" />
+            <BaseSelect v-mode="form.type" :options="typeOptions" placeholder="Type" />            
             <BaseTextarea v-model="form.description" placeholder="Description" />
-            <BaseSelect v-mode="form.type" :options="typeOptions" placeholder="Type" />
+            <BaseEditor v-model="form.description" placeholder="Description..." />
           </div>
         </div>
 
