@@ -1,5 +1,6 @@
 export { default as BaseTitle } from './BaseTitle.vue'
 export { default as BaseInput } from './BaseInput.vue'
+export { default as BaseEditor } from './BaseEditor.vue'
 export { default as BaseSelect } from './BaseSelect.vue'
 export { default as BaseTextarea } from './BaseTextarea.vue'
 export { default as BaseUpload } from './BaseUpload.vue'
