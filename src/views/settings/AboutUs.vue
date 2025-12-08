@@ -87,7 +87,7 @@ const sequenceOptions = computed(() => {
   const total = pages.value.total || 0
   const length = total + 1
   return Array.from({ length }, (_, i) => ({
-    label: `Position ${i + 1}`,
+    label: `Sequence ${i + 1}`,
     value: i + 1
   }))
 })
@@ -177,9 +177,9 @@ const handleCancel = () => {
           <!-- Input Fields -->
           <div class="space-y-3">
             <BaseInput v-model="form.title" placeholder="Name" />
-            <BaseSelect v-model="form.type" :options="typeOptions" placeholder="Type" />
-            <BaseSelect v-model="form.position" :options="sequenceOptions" placeholder="Position" />
             <BaseTextarea v-model="form.content" placeholder="Description" />
+            <BaseSelect v-model="form.type" :options="typeOptions" placeholder="Type" />
+            <BaseSelect v-model="form.position" :options="sequenceOptions" placeholder="Sequence" />
             <!-- <BaseEditor v-model="form.content" placeholder="Description..." /> -->
           </div>
         </div>
