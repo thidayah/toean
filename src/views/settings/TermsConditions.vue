@@ -1,9 +1,10 @@
 <script setup>
-import { ref, onMounted } from 'vue'
+import { ref, onMounted, computed } from 'vue'
 import { BaseButton, BaseTable, BaseInput, Drawer, BaseTitle, BaseAction, BaseSelect, BaseTextarea } from '@/components'
 import { termsHeaders } from "@/utils/columns"
-import { dataTerms } from "@/utils/data"
 import { toast } from "vue-sonner"
+import { apiDelTerm, apiGetTerms, apiPostTerm, apiPutTerm } from "@/api/terms"
+import { handleError } from "@/utils"
 
 const title = 'Terms and Conditions'
 const isLoading = ref(false)
@@ -16,9 +17,9 @@ const pages = ref({ current: 1, per: 10, last: 0, total: 0 })
 const form = ref({
   id: null,
   title: '',
-  description: '',
+  content: '',
   type: '',
-  sequence: '',
+  position: '',
 })
 
 const typeOptions = [
@@ -26,15 +27,9 @@ const typeOptions = [
   { label: 'Customer', value: 'customer' },
 ]
 
-const sequenceOptions = [
-  { label: '1', value: '1' },
-  { label: '2', value: '2' },
-]
-
-const fetchTerms = async (params) => {
+const fetchData = async (params) => {
   try {
-    // const { data, meta } = await apiGetTerms(params)
-    const { data: { items, pagination }  } = dataTerms
+    const { data: { items, pagination } } = await apiGetTerms(params)
     terms.value = items
     pages.value = {
       current: pagination.page,
@@ -49,40 +44,107 @@ const fetchTerms = async (params) => {
   }
 }
 
+const postData = async () => {
+  isAction.value = true
+  try {
+    const { message } = await apiPostTerm({ ...form.value, position: parseInt(form.value.position) })
+    toast.success(message || 'Added successfully!')
+    handleRefersh()
+  } catch (error) {
+    handleError(error)
+  } finally {
+    isAction.value = false
+  }
+}
+
+const putData = async () => {
+  isAction.value = true
+  try {
+    const { message } = await apiPutTerm(form.value.id, { ...form.value, position: parseInt(form.value.position) })
+    toast.success(message || 'Updated successfully!')
+    handleRefersh()
+  } catch (error) {
+    handleError(error)
+  } finally {
+    isAction.value = false
+  }
+}
+
+const delData = async (id) => {
+  isAction.value = true
+  try {
+    const { message } = await apiDelTerm(id)
+    toast.success(message || 'Deleted successfully!')
+    handleRefersh()
+  } catch (error) {
+    handleError(error)
+  } finally {
+    isAction.value = false
+  }
+}
+
+const sequenceOptions = computed(() => {
+  const total = pages.value.total || 0
+  const length = total + 1
+  return Array.from({ length }, (_, i) => ({
+    label: `Sequence ${i + 1}`,
+    value: i + 1
+  }))
+})
+
 onMounted(async () => {
   isLoading.value = true
   try {
     await Promise.all([
-      fetchTerms({ page: pages.value.current, limit: pages.value.per })
+      fetchData({ page: pages.value.current, limit: pages.value.per })
     ])
   } finally {
     isLoading.value = false
   }
 })
 
-// Event handlers
-const handleEdit = (item) => console.log('Edit action:', item)
-const handleDelete = (item) => console.log('Delete action:', item)
-const handlePageChange = (page) => {
-  console.log('Page change action:', item)
+const handlePageChange = async (page) => {
+  isProcess.value = true
+  fetchData({ page: page, limit: pages.value.per })
 }
 
-const handleSave = () => {
-  console.log('added:', form.value)
-  isDrawerOpen.value = false
+const handleSave = () => !isEdit.value ? postData() : putData()
+
+const handleEdit = (item) => {
+  form.value = {
+    id: item.id,
+    title: item.title,
+    content: item.content,
+    type: item.type,
+    position: item.position,
+  }
+  isEdit.value = true
+  isDrawerOpen.value = true
 }
 
-const cancelForm = () => {
+const handleDelete = (item) => {
+  if (confirm('Are you sure to delete this item?')) {
+    delData(item.id)
+  }
+}
+
+const handleRefersh = () => {
+  fetchData({ page: pages.value.current, limit: pages.value.per })
+  setTimeout(() => {
+    isDrawerOpen.value = false
+  }, 100);
+}
+
+const handleCancel = () => {
   isDrawerOpen.value = false
   form.value = {
     id: null,
     title: '',
-    description: '',
+    content: '',
     type: '',
-    sequence: '',
+    position: '',
   }
 }
-
 </script>
 
 <template>
@@ -115,9 +177,9 @@ const cancelForm = () => {
           <!-- Input Fields -->
           <div class="space-y-3">
             <BaseInput v-model="form.title" placeholder="Name" />
-            <BaseTextarea v-model="form.description" placeholder="Description" />
-            <BaseSelect v-mode="form.type" :options="typeOptions" placeholder="Type" />
-            <BaseSelect v-mode="form.sequence" :options="sequenceOptions" placeholder="Sequence" />
+            <BaseTextarea v-model="form.content" placeholder="Description" />
+            <BaseSelect v-model="form.type" :options="typeOptions" placeholder="Type" />
+            <BaseSelect v-model="form.position" :options="sequenceOptions" placeholder="Position" />
           </div>
         </div>
 
@@ -126,12 +188,11 @@ const cancelForm = () => {
           <BaseButton type="submit" variant="filled">
             Save
           </BaseButton>
-          <BaseButton @click="cancelForm" variant="outline">
+          <BaseButton @click="handleCancel" variant="outline">
             Cancel
           </BaseButton>
         </div>
       </form>
     </Drawer>
-
   </div>
 </template>

@@ -46,16 +46,16 @@ export const aboutHeaders = [
 
 export const termsHeaders = [
   { label: 'Title', key: 'title' },
-  { label: 'Description', key: 'description' },
-  { label: 'Sequence', key: 'sequence' },
+  { label: 'Description', key: 'content' },
+  { label: 'Sequence', key: 'position' },
   { label: 'Type', key: 'type' },
   { label: 'Actions', key: 'actions' },
 ]
 
 export const privacyHeaders = [
   { label: 'Title', key: 'title' },
-  { label: 'Description', key: 'description' },
-  { label: 'Sequence', key: 'sequence' },
+  { label: 'Description', key: 'content' },
+  { label: 'Sequence', key: 'position' },
   { label: 'Type', key: 'type' },
   { label: 'Actions', key: 'actions' },
 ]

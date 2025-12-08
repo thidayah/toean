@@ -1,9 +1,10 @@
 <script setup>
-import { ref, onMounted } from 'vue'
+import { ref, onMounted, computed } from 'vue'
 import { BaseButton, BaseTable, BaseInput, Drawer, BaseTitle, BaseAction, BaseSelect, BaseTextarea } from '@/components'
 import { privacyHeaders } from "@/utils/columns"
-import { dataPrivacy } from "@/utils/data"
 import { toast } from "vue-sonner"
+import { apiDelPrivacy, apiGetPrivacy, apiPostPrivacy, apiPutPrivacy } from "@/api/privacy"
+import { handleError } from "@/utils"
 
 const title = 'Privacy Policy'
 const isLoading = ref(false)
@@ -16,7 +17,7 @@ const pages = ref({ current: 1, per: 10, last: 0, total: 0 })
 const form = ref({
   id: null,
   title: '',
-  description: '',
+  content: '',
   type: '',
   sequence: '',
 })
@@ -26,15 +27,9 @@ const typeOptions = [
   { label: 'Customer', value: 'customer' },
 ]
 
-const sequenceOptions = [
-  { label: '1', value: '1' },
-  { label: '2', value: '2' },
-]
-
-const fetchPrivacy = async (params) => {
+const fetchData = async (params) => {
   try {
-    // const { data, meta } = await apiGetPrivacy(params)
-    const { data: { items, pagination } } = dataPrivacy
+    const { data: { items, pagination } } = await apiGetPrivacy(params)
     privacy.value = items
      pages.value = {
       current: pagination.page,
@@ -49,40 +44,107 @@ const fetchPrivacy = async (params) => {
   }
 }
 
+const postData = async () => {
+  isAction.value = true
+  try {
+    const { message } = await apiPostPrivacy({ ...form.value, position: parseInt(form.value.position) })
+    toast.success(message || 'Added successfully!')
+    handleRefersh()
+  } catch (error) {
+    handleError(error)
+  } finally {
+    isAction.value = false
+  }
+}
+
+const putData = async () => {
+  isAction.value = true
+  try {
+    const { message } = await apiPutPrivacy(form.value.id, { ...form.value, position: parseInt(form.value.position) })
+    toast.success(message || 'Updated successfully!')
+    handleRefersh()
+  } catch (error) {
+    handleError(error)
+  } finally {
+    isAction.value = false
+  }
+}
+
+const delData = async (id) => {
+  isAction.value = true
+  try {
+    const { message } = await apiDelPrivacy(id)
+    toast.success(message || 'Deleted successfully!')
+    handleRefersh()
+  } catch (error) {
+    handleError(error)
+  } finally {
+    isAction.value = false
+  }
+}
+
+const sequenceOptions = computed(() => {
+  const total = pages.value.total || 0
+  const length = total + 1
+  return Array.from({ length }, (_, i) => ({
+    label: `Sequence ${i + 1}`,
+    value: i + 1
+  }))
+})
+
 onMounted(async () => {
   isLoading.value = true
   try {
     await Promise.all([
-      fetchPrivacy({ page: pages.value.current, limit: pages.value.per })
+      fetchData({ page: pages.value.current, limit: pages.value.per })
     ])
   } finally {
     isLoading.value = false
   }
 })
 
-// Event handlers
-const handleEdit = (item) => console.log('Edit action:', item)
-const handleDelete = (item) => console.log('Delete action:', item)
-const handlePageChange = (page) => {
-  console.log('Page change action:', item)
+const handlePageChange = async (page) => {
+  isProcess.value = true
+  fetchData({ page: page, limit: pages.value.per })
 }
 
-const handleSave = () => {
-  console.log('added:', form.value)
-  isDrawerOpen.value = false
+const handleSave = () => !isEdit.value ? postData() : putData()
+
+const handleEdit = (item) => {
+  form.value = {
+    id: item.id,
+    title: item.title,
+    content: item.content,
+    type: item.type,
+    position: item.position,
+  }
+  isEdit.value = true
+  isDrawerOpen.value = true
 }
 
-const cancelForm = () => {
+const handleDelete = (item) => {
+  if (confirm('Are you sure to delete this item?')) {
+    delData(item.id)
+  }
+}
+
+const handleRefersh = () => {
+  fetchData({ page: pages.value.current, limit: pages.value.per })
+  setTimeout(() => {
+    isDrawerOpen.value = false
+  }, 100);
+}
+
+const handleCancel = () => {
   isDrawerOpen.value = false
   form.value = {
     id: null,
     title: '',
-    description: '',
+    content: '',
     type: '',
-    sequence: '',
+    position: '',
   }
 }
-
 </script>
 
 <template>
@@ -115,7 +177,7 @@ const cancelForm = () => {
           <!-- Input Fields -->
           <div class="space-y-3">
             <BaseInput v-model="form.title" placeholder="Name" />
-            <BaseTextarea v-model="form.description" placeholder="Description" />
+            <BaseTextarea v-model="form.content" placeholder="Description" />
             <BaseSelect v-mode="form.type" :options="typeOptions" placeholder="Type" />
             <BaseSelect v-mode="form.sequence" :options="sequenceOptions" placeholder="Sequence" />
           </div>
@@ -126,7 +188,7 @@ const cancelForm = () => {
           <BaseButton type="submit" variant="filled">
             Save
           </BaseButton>
-          <BaseButton @click="cancelForm" variant="outline">
+          <BaseButton @click="handleCancel" variant="outline">
             Cancel
           </BaseButton>
         </div>
