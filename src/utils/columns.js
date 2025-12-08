@@ -39,7 +39,7 @@ export const walkthroughHeaders = [
 
 export const aboutHeaders = [
   { label: 'Title', key: 'title' },
-  { label: 'Description', key: 'description' },
+  { label: 'Description', key: 'content' },
   { label: 'Type', key: 'type' },
   { label: 'Actions', key: 'actions' },
 ]

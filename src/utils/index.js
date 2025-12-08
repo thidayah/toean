@@ -12,6 +12,6 @@ export function handleError(error) {
       toast.warning(message)
     }
   } else {
-    return toast.error(message)
+    return toast.error(message || 'Api gateway error')
   }
 }
