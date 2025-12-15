@@ -144,6 +144,7 @@ const handleRefresh = () => {
 
 const handleCancel = () => {
   isDrawerOpen.value = false
+  isEdit.value = false
   userForm.value = {
     fullName: '',
     email: '',
@@ -199,7 +200,7 @@ const handleCancel = () => {
     </BaseTable>
 
     <!-- Drawer -->
-    <Drawer v-model="isDrawerOpen" :title="`${isEdit ? 'Edit' : 'Add'} User`">
+    <Drawer v-model="isDrawerOpen" :title="`${isEdit ? 'Edit' : 'Add'} User`" @onClose="handleCancel">
       <form @submit.prevent="handleSave" class="flex flex-col h-full justify-between">
         <div class="overflow-y-auto p-4 px-6">
           <!-- Avatar Upload -->

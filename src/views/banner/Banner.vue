@@ -143,8 +143,9 @@ const handleRefresh = () => {
   }, 100);
 }
 
-const cancelForm = () => {
+const handleCancel = () => {
   isDrawerOpen.value = false
+  isEdit.value = false
   form.value = {
     id: null,
     title: '',
@@ -198,7 +199,7 @@ const cancelForm = () => {
     </BaseTable>
 
     <!-- Drawer -->
-    <Drawer v-model="isDrawerOpen" :title="`${isEdit ? 'Edit' : 'Add'} Banner`">
+    <Drawer v-model="isDrawerOpen" :title="`${isEdit ? 'Edit' : 'Add'} Banner`" @onClose="handleCancel">
       <form @submit.prevent="handleSave" class="flex flex-col h-full justify-between">
         <!-- <div class="overflow-y-auto p-4 px-6"> -->
         <div class=" p-4 px-6">
@@ -220,7 +221,7 @@ const cancelForm = () => {
           <BaseButton type="submit" variant="filled">
             Save
           </BaseButton>
-          <BaseButton @click="cancelForm" variant="outline">
+          <BaseButton @click="handleCancel" variant="outline">
             Cancel
           </BaseButton>
         </div>
