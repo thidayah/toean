@@ -10,9 +10,13 @@ defineProps({
   },
 })
 
-const emit = defineEmits(['update:modelValue'])
+// const emit = defineEmits(['update:modelValue', 'click'])
+const emit = defineEmits(['onClose'])
+const closeDrawer = () => {
+  // emit('update:modelValue', false)
+  emit('onClose')
+}
 
-const closeDrawer = () => emit('update:modelValue', false)
 </script>
 
 <template>
