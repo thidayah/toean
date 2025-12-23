@@ -1,4 +1,5 @@
 <script setup>
+  import DefaultAvatar from '@/assets/DefaultAvatar.png'
   defineProps({
     size: {
       type: String,
@@ -13,5 +14,6 @@
 </script>
 
 <template>
-  <img :src="url" alt="photo" :class="[` ${size} rounded-full object-cover `]" />
+  <img v-if="url" :src="url" alt="photo" :class="[` ${size} rounded-full object-cover `]" />
+  <img v-else :src="DefaultAvatar" alt="default avatar" :class="[` ${size} rounded-full object-cover `]" />
 </template>
