@@ -12,13 +12,13 @@ const props = defineProps({
     default: false,
   },
 })
-const emit = defineEmits(['update:modelValue', 'onShow'])
+const emit = defineEmits(['update:modelValue', 'onShow', 'onEnter'])
 </script>
 
 <template>
   <div class="relative">
     <input :type="type === 'password' ? show ? 'text' : 'password' : type" :placeholder="placeholder"
-      :value="modelValue" @input="emit('update:modelValue', $event.target.value)"
+      :value="modelValue" @input="emit('update:modelValue', $event.target.value)" @keyup.enter="emit('onEnter')"
       class="w-full border border-gray-200 rounded-md p-3 text-sm placeholder:text-gray-400 focus:outline-none focus:ring-1 focus:ring-[#1f438d] transition" />
     <button v-if="type === 'password'" type="button" @click="emit('onShow')"
       class="absolute inset-y-0 right-0 flex items-center pr-3 cursor-pointer">
