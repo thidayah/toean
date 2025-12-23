@@ -290,3 +290,98 @@ export const dataPrivacy = {
   }
 }
 
+
+export const dataDriverList = {
+  "data": {
+    "items": [
+      {
+        "agree_privacy_policy": false,
+        "agree_tnc": false,
+        "approval_status": "pending",
+        "approved_at": null,
+        "approved_by": null,
+        "created_at": "2025-12-22T09:19:30.776583Z",
+        "current_step": 1,
+        "deleted_at": null,
+        "driver_id": null,
+        "email": "taufik.dev@mailinator.com",
+        "id": 1,
+        "ktp_image": "",
+        "motor_scheme_id": null,
+        "name": "Taufik Dev",
+        "otp_verified": false,
+        "phone_number": "089634934225",
+        "registration_id": "DRV-a88a6bfb",
+        "rejection_note": "",
+        "selfie_image": "",
+        "sim_image": "",
+        "status": "in_progress",
+        "survey_completed": false,
+        "survey_score": 0,
+        "survey_status": "",
+        "updated_at": "2025-12-22T09:19:30.776583Z"
+      },
+      {
+        "agree_privacy_policy": false,
+        "agree_tnc": false,
+        "approval_status": "pending",
+        "approved_at": null,
+        "approved_by": null,
+        "created_at": "2025-12-22T09:21:01.953179Z",
+        "current_step": 1,
+        "deleted_at": null,
+        "driver_id": null,
+        "email": "jane.done@mailinator.com",
+        "id": 2,
+        "ktp_image": "",
+        "motor_scheme_id": null,
+        "name": "Jane Done",
+        "otp_verified": false,
+        "phone_number": "0897654321",
+        "registration_id": "DRV-b1162cb3",
+        "rejection_note": "",
+        "selfie_image": "",
+        "sim_image": "",
+        "status": "in_progress",
+        "survey_completed": false,
+        "survey_score": 0,
+        "survey_status": "",
+        "updated_at": "2025-12-22T09:21:01.953179Z"
+      },
+      {
+        "agree_privacy_policy": false,
+        "agree_tnc": false,
+        "approval_status": "pending",
+        "approved_at": null,
+        "approved_by": null,
+        "created_at": "2025-12-22T09:22:01.555855Z",
+        "current_step": 1,
+        "deleted_at": null,
+        "driver_id": null,
+        "email": "taufikhidayah1996@yahoo.co.id",
+        "id": 3,
+        "ktp_image": "",
+        "motor_scheme_id": null,
+        "name": "Taufik Deelop",
+        "otp_verified": false,
+        "phone_number": "0897654333",
+        "registration_id": "DRV-12526451",
+        "rejection_note": "",
+        "selfie_image": "",
+        "sim_image": "",
+        "status": "in_progress",
+        "survey_completed": false,
+        "survey_score": 0,
+        "survey_status": "",
+        "updated_at": "2025-12-22T09:22:01.555855Z"
+      }
+    ],
+    "pagination": {
+      "limit": 10,
+      "page": 1,
+      "total": 3,
+      "totalPage": 1
+    }
+  },
+  "message": "Data fetched successfully"
+}

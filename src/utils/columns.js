@@ -59,3 +59,12 @@ export const privacyHeaders = [
   { label: 'Type', key: 'type' },
   { label: 'Actions', key: 'actions' },
 ]
+
+export const driverListHeaders = [
+  { label: 'Photo', key: 'photo' },
+  { label: 'Name', key: 'name' },
+  { label: 'Email', key: 'email' },
+  { label: 'Phone', key: 'phone_number' },
+  { label: 'Status', key: 'status' },
+  { label: 'Actions', key: 'actions' },
+]
