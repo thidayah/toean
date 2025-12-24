@@ -13,6 +13,7 @@ import AboutUs from "@/views/settings/AboutUs.vue"
 import TermsConditions from "@/views/settings/TermsConditions.vue"
 import PrivacyPolicy from "@/views/settings/PrivacyPolicy.vue"
 import NotFound from "@/views/NotFound.vue"
+import List from "@/views/driver/List.vue"
 
 const routes = [
   {
@@ -44,6 +45,15 @@ const routes = [
     meta: { requiresAuth: true },
     children: [
       { path: '/customer', name: 'Customer', component: Customer, meta: { title: 'Customer | Toean' } },
+    ]
+  },
+  {
+    path: '/driver',
+    component: Layout,
+    meta: { requiresAuth: true },
+    children: [
+      { path: '/driver/list', name: 'Driver List', component: List, meta: { title: 'Driver List | Toean' } },
+      // { path: '/driver/area', name: 'Driver Area', component: Walkthrough, meta: { title: 'Driver Area | Toean' } },
     ]
   },
   {
